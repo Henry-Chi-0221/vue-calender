@@ -1,58 +1,355 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
-  </div>
+  <v-app id="inspire">
+    <v-row class="fill-height">
+      <v-col>
+        <v-sheet height="64">
+          <v-toolbar flat color="white">
+            <v-btn outlined class="mr-4" @click="setToday">
+              Today
+            </v-btn>
+            <v-btn fab text small @click="prev">
+              <v-icon small>mdi-chevron-left</v-icon>
+            </v-btn>
+            <v-btn fab text small @click="next">
+              <v-icon small>mdi-chevron-right</v-icon>
+            </v-btn>
+            <v-toolbar-title>{{ title }}</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-avatar style="marginRight:15px" color="primary" size="36" @click="accountIcon">
+              <v-btn text icon color="white" @click="accountIcon">
+                <v-icon dark>mdi-account-circle</v-icon>
+              </v-btn>
+            </v-avatar>
+              
+            <v-menu bottom right>
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  outlined
+                  v-on="on"
+                >
+                  <span>{{ typeToLabel[type] }}</span>
+                  <v-icon right>mdi-menu-down</v-icon>
+                </v-btn>
+              </template>
+              <v-list>
+                <v-list-item @click="type = 'day'">
+                  <v-list-item-title>Day</v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="type = 'week'">
+                  <v-list-item-title>Week</v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="type = 'month'">
+                  <v-list-item-title>Month</v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="type = '4day'">
+                  <v-list-item-title>4 days</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </v-toolbar>
+        </v-sheet>
+        <v-sheet height="600">
+          <v-calendar
+            ref="calendar"
+            v-model="focus"
+            color="primary"
+            :events="events"
+            :event-color="getEventColor"
+            :event-margin-bottom="3"
+            :now="today"
+            :type="type"
+            @click:event="showEvent"
+            @click:more="viewDay"
+            @click:date="viewDay"
+            @change="updateRange"
+          ></v-calendar>
+          <v-menu
+            v-model="selectedOpen"
+            :close-on-content-click="false"
+            :activator="selectedElement"
+            full-width
+            offset-x
+          >
+            <v-card
+              color="grey lighten-4"
+              min-width="350px"
+              flat
+            >
+              <v-toolbar
+                :color="selectedEvent.color"
+                dark
+              >
+                <v-btn icon>
+                  <v-icon>mdi-pencil</v-icon>
+                </v-btn>
+                <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn icon>
+                  <v-icon>mdi-heart</v-icon>
+                </v-btn>
+                <v-btn icon>
+                  <v-icon>mdi-dots-vertical</v-icon>
+                </v-btn>
+              </v-toolbar>
+              <v-card-text>
+                <span v-html="selectedEvent.details"></span>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn
+                  text
+                  color="secondary"
+                  @click="selectedOpen = false"
+                >
+                  Cancel
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-menu>
+        </v-sheet>
+      </v-col>
+    </v-row>
+  </v-app>
 </template>
 
 <script>
 export default {
   name: 'HelloWorld',
-  props: {
-    msg: String
-  }
-}
-</script>
+  
+data: () => ({
+    today: '2019-1-10',
+    focus: '2019-1-10',
+    test : '',
+    type: 'month',
+    typeToLabel: {
+      month: 'Month',
+      week: 'Week',
+      day: 'Day',
+      '4day': '4 Days',
+    },
+    start: null,
+    end: null,
+    selectedEvent: {},
+    selectedElement: null,
+    selectedOpen: false,
+    events: [
+      {
+        name: 'Vacation',
+        details: 'Going to the beach!',
+        start: '2018-12-29',
+        end: '2019-01-01',
+        color: 'blue',
+      },
+      {
+        name: 'Meeting',
+        details: 'Spending time on how we do not have enough time',
+        start: '2019-01-07 09:00',
+        end: '2019-01-07 09:30',
+        color: 'indigo',
+      },
+      {
+        name: 'Large Event',
+        details: 'This starts in the middle of an event and spans over multiple events',
+        start: '2018-12-31',
+        end: '2019-01-04',
+        color: 'deep-purple',
+      },
+      {
+        name: '3rd to 7th',
+        details: 'Testing',
+        start: '2019-01-03',
+        end: '2019-01-07',
+        color: 'cyan',
+      },
+      {
+        name: 'Big Meeting',
+        details: 'A very important meeting about nothing',
+        start: '2019-01-07 08:00',
+        end: '2019-01-07 11:30',
+        color: 'red',
+      },
+      {
+        name: 'Another Meeting',
+        details: 'Another important meeting about nothing',
+        start: '2019-01-07 10:00',
+        end: '2019-01-07 13:30',
+        color: 'brown',
+      },
+      {
+        name: '7th to 8th',
+        start: '2019-01-07',
+        end: '2019-01-08',
+        color: 'blue',
+      },
+      {
+        name: 'Lunch',
+        details: 'Time to feed',
+        start: '2019-01-07 12:00',
+        end: '2019-01-07 15:00',
+        color: 'deep-orange',
+      },
+      {
+        name: '30th Birthday',
+        details: 'Celebrate responsibly',
+        start: '2019-01-03',
+        color: 'teal',
+      },
+      {
+        name: 'New Year',
+        details: 'Eat chocolate until you pass out',
+        start: '2019-01-01',
+        end: '2019-01-02',
+        color: 'green',
+      },
+      {
+        name: 'Conference',
+        details: 'The best time of my life',
+        start: '2019-01-21',
+        end: '2019-01-28',
+        color: 'grey darken-1',
+      },
+      {
+        name: 'Hackathon',
+        details: 'Code like there is no tommorrow',
+        start: '2019-01-30 23:00',
+        end: '2019-02-01 08:00',
+        color: 'black',
+      },
+      {
+        name: 'event 1',
+        start: '2019-01-14 18:00',
+        end: '2019-01-14 19:00',
+        color: '#4285F4',
+      },
+      {
+        name: 'event 2',
+        start: '2019-01-14 18:00',
+        end: '2019-01-14 19:00',
+        color: '#4285F4',
+      },
+      {
+        name: 'event 5',
+        start: '2019-01-14 18:00',
+        end: '2019-01-14 19:00',
+        color: '#4285F4',
+      },
+      {
+        name: 'event 3',
+        start: '2019-01-14 18:30',
+        end: '2019-01-14 20:30',
+        color: '#4285F4',
+      },
+      {
+        name: 'event 4',
+        start: '2019-01-14 19:00',
+        end: '2019-01-14 20:00',
+        color: '#4285F4',
+      },
+      {
+        name: 'event 6',
+        start: '2019-01-14 21:00',
+        end: '2019-01-14 23:00',
+        color: '#4285F4',
+      },
+      {
+        name: 'event 7',
+        start: '2019-01-14 22:00',
+        end: '2019-01-14 23:00',
+        color: '#4285F4',
+      },
+    ],
+  }),
+  computed: {
+    title () {
+      const { start, end } = this
+      if (!start || !end) {
+        return ''
+      }
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-</style>
+      const startMonth = this.monthFormatter(start)
+      const endMonth = this.monthFormatter(end)
+      const suffixMonth = startMonth === endMonth ? '' : endMonth
+
+      const startYear = start.year
+      const endYear = end.year
+      const suffixYear = startYear === endYear ? '' : endYear
+
+      const startDay = start.day + this.nth(start.day)
+      const endDay = end.day + this.nth(end.day)
+
+      switch (this.type) {
+        case 'month':
+          return `${startMonth} ${startYear}`
+        case 'week':
+        case '4day':
+          return `${startMonth} ${startDay} ${startYear} - ${suffixMonth} ${endDay} ${suffixYear}`
+        case 'day':
+          return `${startMonth} ${startDay} ${startYear}`
+      }
+      return ''
+    },
+    monthFormatter () {
+      return this.$refs.calendar.getFormatter({
+        timeZone: 'UTC', month: 'long',
+      })
+    },
+  },
+  mounted () {
+    this.$refs.calendar.checkChange();
+    this.setToday();
+  },
+  methods: {
+    viewDay ({ date }) {
+      this.focus = date
+      this.type = 'day'
+    },
+    getEventColor (event) {
+      return event.color
+    },
+    setToday () {
+      this.type ="month";
+      var date = new Date();
+      var Y = date.getFullYear();
+      var M = date.getMonth()+1;
+      var D = date.getDate();
+      this.today = Y+'-'+M+'-'+D;
+      this.focus = this.today;
+    },
+    prev () {
+      this.$refs.calendar.prev()
+    },
+    next () {
+      this.$refs.calendar.next()
+    },
+    showEvent ({ nativeEvent, event }) {
+      const open = () => {
+        this.selectedEvent = event
+        this.selectedElement = nativeEvent.target
+        setTimeout(() => this.selectedOpen = true, 10)
+      }
+
+      if (this.selectedOpen) {
+        this.selectedOpen = false
+        setTimeout(open, 10)
+      } else {
+        open()
+      }
+
+      nativeEvent.stopPropagation()
+    },
+    updateRange ({ start, end }) {
+      // You could load events from an outside source (like database) now that we have the start and end dates on the calendar
+      this.start = start
+      this.end = end
+    },
+    nth (d) {
+      return d > 3 && d < 21
+        ? 'th'
+        : ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'][d % 10]
+    },
+    accountIcon (){
+
+    }
+  },
+
+};
+</script>
