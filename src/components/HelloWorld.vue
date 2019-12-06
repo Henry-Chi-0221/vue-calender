@@ -1,5 +1,24 @@
 <template>
   <v-app id="inspire">
+    <v-app-bar
+      app
+      color="primary"
+      dark
+    >
+      <div class="d-flex align-center">
+          <v-btn icon color="primary">
+            <v-icon color="white">far fa-calendar</v-icon> 
+          </v-btn>
+          <v-btn small depressed color="primary">calendar</v-btn>
+      </div>
+
+      <v-spacer></v-spacer>
+      <v-avatar style="marginRight:15px" size="36" color="red" >
+              <v-btn icon text @click="accountIcon">
+                <span class="white--text headline">CJ</span>
+              </v-btn>
+      </v-avatar>
+    </v-app-bar>
     <v-row class="fill-height">
       <v-col>
         <v-sheet height="64">
@@ -15,11 +34,6 @@
             </v-btn>
             <v-toolbar-title>{{ title }}</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-avatar style="marginRight:15px" color="primary" size="36" @click="accountIcon">
-              <v-btn text icon color="white" @click="accountIcon">
-                <v-icon dark>mdi-account-circle</v-icon>
-              </v-btn>
-            </v-avatar>
               
             <v-menu bottom right>
               <template v-slot:activator="{ on }">
@@ -78,21 +92,27 @@
               <v-toolbar
                 :color="selectedEvent.color"
                 dark
-              >
+              ><!--
                 <v-btn icon>
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
+                -->
                 <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
                 <v-spacer></v-spacer>
+              <!--    
                 <v-btn icon>
                   <v-icon>mdi-heart</v-icon>
                 </v-btn>
                 <v-btn icon>
                   <v-icon>mdi-dots-vertical</v-icon>
                 </v-btn>
+                -->  
               </v-toolbar>
               <v-card-text>
                 <span v-html="selectedEvent.details"></span>
+              </v-card-text>
+              <v-card-text v-if="!selectedEvent.details">
+                <span>尚無備註</span>
               </v-card-text>
               <v-card-actions>
                 <v-btn
@@ -108,16 +128,199 @@
         </v-sheet>
       </v-col>
     </v-row>
+
+
+<v-row justify="center">
+    <v-dialog v-model="add_toggle" persistent max-width="600px">
+      <v-card >
+        <v-toolbar
+                :color="add.color"
+                dark
+              >
+                <v-toolbar-title v-html="add.name"></v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn icon @click="nextColor">
+                  <v-icon small>fas fa-paint-brush</v-icon>
+                </v-btn>
+              </v-toolbar>
+        <v-card-text>
+          <v-container>
+    <!------------------------------------------------------------>
+            
+              
+       
+    <v-row justify="center">
+        
+        <v-col cols="12">
+                <v-menu
+                  ref="menu1"
+                  v-model="menu1"
+                  :close-on-content-click="false"
+                  transition="scale-transition"
+                  offset-y
+                  full-width
+                  max-width="290px"
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on }">
+                    <v-text-field
+                      v-model="dateFormatted1"
+                      label="開始日期"
+                      hint="MM/DD/YYYY format"
+                      persistent-hint
+                      prepend-icon="fas fa-calendar-day"
+                      @blur="date1 = parseDate(dateFormatted1)"
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker 
+                    v-model="date1" 
+                    no-title 
+                    @input="menu1 = false"
+                    :min="dateFormatted2"
+                                 ></v-date-picker>
+                </v-menu>
+              </v-col>
+              <v-col cols="12">
+                <v-menu
+                  ref="menu2"
+                  v-model="menu2"
+                  :close-on-content-click="false"
+                  transition="scale-transition"
+                  offset-y
+                  full-width
+                  max-width="290px"
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on }">
+                    <v-text-field
+                      v-model="dateFormatted2"
+                      label="結束日期"
+                      hint="MM/DD/YYYY format"
+                      persistent-hint
+                      prepend-icon="fas fa-calendar-day"
+                      @blur="date2 = parseDate(dateFormatted2)"
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker 
+                    v-model="date2" 
+                    no-title 
+                    @input="menu2 = false"
+                    :min="dateFormatted1"></v-date-picker>
+                </v-menu>
+              </v-col>  
+            
+        <v-col cols="6">
+              <v-dialog
+                ref="dialog1"
+                v-model="modal1"
+                :return-value.sync="time1"
+                persistent
+                width="290px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    v-model="time1"
+                    label="Picker in dialog"
+                    prepend-icon="fas fa-clock"
+                    readonly
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-time-picker
+                  v-if="modal1"
+                  v-model="time1"
+                  full-width
+                  :max="time2"
+                >
+                  <v-btn text color="primary" @click="modal1 = false">Cancel</v-btn>
+                  <v-btn text color="primary" @click="$refs.dialog1.save(time1)">OK</v-btn>
+                </v-time-picker>
+              </v-dialog>
+            </v-col>
+    
+                
+                
+       <v-col cols="6">
+          <v-dialog
+            ref="dialog2"
+            v-model="modal2"
+            :return-value.sync="time2"
+            persistent
+            width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                v-model="time2"
+                label="Picker in dialog"
+                prepend-icon="fas fa-clock"
+                readonly
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-time-picker
+              v-if="modal2"
+              v-model="time2"
+              full-width
+              :min="time1"
+            >
+              <v-spacer></v-spacer>
+              <v-btn text color="primary" @click="modal2 = false">Cancel</v-btn>
+              <v-btn text color="primary" @click="$refs.dialog2.save(time2)">OK</v-btn>
+            </v-time-picker>
+          </v-dialog>
+        </v-col>  
+                     
+            <v-col cols="6">
+                <v-text-field v-model="add.name" label="事件名稱*" required @focus="checkFocus()" @blur="checkBlur()"></v-text-field>
+            </v-col>
+              
+            <v-col cols="6">
+                <v-text-field v-model="add.details" label="備註"></v-text-field>
+            </v-col>
+        </v-row>
+        </v-container>
+          <small>*indicates required field</small>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="add_toggle = false">Close</v-btn>
+          <v-btn color="blue darken-1" text @click="send()">Save</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-row>
+<!---------------------------------------------------------------->
+<div class="float" v-if="type =='day'">
+    <v-btn  fab dark small color="primary" @click="addEvent">
+      <v-icon dark>mdi-plus</v-icon>
+    </v-btn>
+</div>
+    
+
   </v-app>
 </template>
 
+@import url("https://fonts.googleapis.com/css?family=Noto+Sans+TC&display=swap" rel="stylesheet")
+
+<style>
+    *{
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+    .float{
+        position: fixed;
+        bottom: 5%;
+        right : 5%;
+    }
+</style>
 <script>
 export default {
   name: 'HelloWorld',
   
-data: () => ({
-    today: '2019-1-10',
-    focus: '2019-1-10',
+data: vm => ({
+    today: '2019-1-1',
+    focus: '2019-1-1',
     test : '',
     type: 'month',
     typeToLabel: {
@@ -131,12 +334,40 @@ data: () => ({
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
+    
+    
+    add_toggle : false,
+    add : {
+        name : '',
+        details: '',
+        start: '',
+        end  : '',
+        color: 'primary'
+    },
+    colors :['primary','blue','indigo','deep-purple','deep-purple','red','deep-orange','teal','green','grey darken-1','black','#4285F4'],
+    colorIndex:0,
+    
+    date1: new Date(+new Date() + 8 * 3600 * 1000).toISOString().substr(0, 10),
+    
+    dateFormatted1: vm.formatDate(new Date(+new Date() + 8 * 3600 * 1000).toISOString().substr(0, 10)),
+    
+    date2: new Date(+new Date() + 8 * 3600 * 1000).toISOString().substr(0, 10),
+    
+    dateFormatted2: vm.formatDate(new Date(+new Date() + 8 * 3600 * 1000).toISOString().substr(0, 10)),
+      menu1: false,
+      menu2: false,
+    
+      time1: null,
+      time2: null,
+      modal1: false,
+      modal2: false,
+    
     events: [
       {
         name: 'Vacation',
         details: 'Going to the beach!',
-        start: '2018-12-29',
-        end: '2019-01-01',
+        start: '2019-12-10',
+        end: '2019-12-12',
         color: 'blue',
       },
       {
@@ -292,15 +523,26 @@ data: () => ({
         timeZone: 'UTC', month: 'long',
       })
     },
+    computedDateFormatted () {
+        return this.formatDate(this.date)
+      },
+      parseTime1() {
+          return this.add.start + ' ' + this.time1;
+      },
+      parseTime2() {
+          return this.add.end + ' ' + this.time2;
+      },
   },
   mounted () {
+    this.colorIndex = 0;
     this.$refs.calendar.checkChange();
     this.setToday();
+    this.defaultTime();
   },
   methods: {
     viewDay ({ date }) {
       this.focus = date
-      this.type = 'day'
+      this.type = "day"
     },
     getEventColor (event) {
       return event.color
@@ -347,9 +589,82 @@ data: () => ({
         : ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'][d % 10]
     },
     accountIcon (){
+        this.defaultTime();
+        console.log(this.time1);
+        console.log(this.time2);
+    },
+    addEvent (x){
+        console.log(x);
+        this.add_toggle = true;
+        this.add.start = this.focus;
+        this.add.end   = this.focus;
+        this.add.name  = this.focus;
+        
+        this.date1 = this.focus;
+        this.date2 = this.focus;
+        
+    },
+    checkBlur(){
+        if(this.add.name==''){
+            this.add.name=this.add.start;
+        }
+    },
+    checkFocus(){
+        if(this.add.name==this.add.start){
+            this.add.name='';
+        }
+    },
+    nextColor(){
+        this.colorIndex++;
+        this.add.color = this.colors[this.colorIndex];
+        if(this.colorIndex == this.colors.length){
+            this.colorIndex = 0;
+        }
+    },
+      formatDate (date) {
+        if (!date) return null
 
-    }
+        const [year, month, day] = date.split('-')
+        return `${month}/${day}/${year}`
+      },
+      parseDate (date) {
+        if (!date) return null
+
+        const [month, day, year] = date.split('/')
+        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+      },
+      send () {
+          this.add.start = this.parseTime1;
+          this.add.end = this.parseTime2;
+          console.log(this.add);
+          this.add_toggle = false;
+          this.events.push(this.add);
+      },
+      defaultTime(){
+          var date = new Date();
+          var H = date.getHours() ;
+          var M = date.getMinutes() ;
+          if(H < 10){
+              H = '0' + H;
+          };
+          if(M < 10){
+              M = '0' + M;
+          }
+          this.time1 = H + ":" + M;
+          this.time2 = H + ":" + M;
+      }
+      
   },
+  watch: {
+      date1 (val) {
+        this.dateFormatted1 = this.formatDate(this.date1);
+        this.add.start = this.date1;
+      },
+      date2 (val) {
+        this.dateFormatted2 = this.formatDate(this.date2);
+        this.add.end = this.date2;
+      }
+    },
 
 };
 </script>
