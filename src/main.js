@@ -5,15 +5,22 @@ import router from './router'
 import vuetify from './plugins/vuetify';
 import store from './store'
 import VueRouter from 'vue-router';
-import { routes } from './routes'
 Vue.config.productionTip = false
+//Vue.use(VueRouter);
 
-Vue.use(VueRouter);
 
-const router = new VueRouter({
-  routes,
-  mode: 'history'
+router.beforeEach((to, from, next)=>{
+  const isLogin = localStorage.getItem('token') == 'ImLogin' ;
+  if( isLogin ){
+    next();
+  } else {
+    if( to.path !== '/login')
+      next('/login');
+    else
+      next();
+  }
 });
+
 
 new Vue({
   router,
