@@ -6,8 +6,8 @@
           <v-card min-width="350px" max-width="450px">
             <v-card-text>
               <div>紀錄生活中的一切...</div>
-              <v-divider/>
-              <p/>
+              <v-divider />
+              <p />
               <p class="display-2 text--primary">登入</p>
               <p>行事曆</p>
             </v-card-text>
@@ -66,13 +66,19 @@
               <v-container>
                 <v-row>
                   <v-col cols="12">
-                    <v-text-field  v-model="joinName" label="帳號名稱" :rules="joinNameRules" required></v-text-field>
+                    <v-text-field v-model="joinName" label="帳號名稱" :rules="joinNameRules" required></v-text-field>
                   </v-col>
                   <v-col cols="12">
-                    <v-text-field  v-model="joinEmail" label="電子郵件" :rules="joinEmailRules"  required></v-text-field>
+                    <v-text-field v-model="joinEmail" label="電子郵件" :rules="joinEmailRules" required></v-text-field>
                   </v-col>
                   <v-col cols="12">
-                    <v-text-field   v-model="joinPass" label="密碼" type="password" :rules="joinPassRules"  required></v-text-field>
+                    <v-text-field
+                      v-model="joinPass"
+                      label="密碼"
+                      type="password"
+                      :rules="joinPassRules"
+                      required
+                    ></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -104,9 +110,9 @@ export default {
       password: "",
       valid: false,
 
-      joinName:"",
-      joinPass:"",
-      joinEmail:"",
+      joinName: "",
+      joinPass: "",
+      joinEmail: "",
 
       passwordRules: [
         v => !!v || "請輸入使用者密碼",
@@ -125,7 +131,7 @@ export default {
   methods: {
     login() {
       axios
-        .post("/loginCheck", {
+        .post("/api/loginCheck", {
           userName: this.username,
           userPassword: this.password
         })
@@ -147,22 +153,20 @@ export default {
             this.errorPass = true;
           }
         });
-        
     },
-      join() {
+    join() {
       axios
-        .post("/addUser", {
+        .post("/api/addUser", {
           userName: this.joinName,
           userPassword: this.joinPass,
-          userEmail:this.joinEmail
+          userEmail: this.joinEmail
         })
         .then(response => {
-          this.joinDialog=false;
+          this.joinDialog = false;
         })
         .catch(response => {
           console.log(error);
         });
-        
     }
   },
   computed: {},

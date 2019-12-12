@@ -128,13 +128,13 @@ export default {
     },
     getModify() {
       axios
-        .post("/getModify",{
-          userName: localStorage.getItem('username'),
+        .post("/api/getModify", {
+          userName: localStorage.getItem("username")
         })
         .then(response => {
-          this.modifyName=response.data.name;
-          this.modifyPass=response.data.password;
-          this.modifyEmail=response.data.email;
+          this.modifyName = response.data.name;
+          this.modifyPass = response.data.password;
+          this.modifyEmail = response.data.email;
           console.log(response.data);
         })
         .catch(response => {
@@ -145,21 +145,20 @@ export default {
     modify() {
       console.log(this.modifyPass);
       axios
-        .post("/modify",{
-          userName: localStorage.getItem('username'),
-          userPassword:this.modifyPass,
-          userEmail:this.modifyEmail
+        .post("/api/modify", {
+          userName: localStorage.getItem("username"),
+          userPassword: this.modifyPass,
+          userEmail: this.modifyEmail
         })
         .then(response => {
           console.log(response.data);
-          this.modifyDialog=false;
+          this.modifyDialog = false;
         })
         .catch(error => {
           console.log(error);
         });
       //console.log(this.selectedEvent);
     }
-    }
-  
+  }
 };
 </script>

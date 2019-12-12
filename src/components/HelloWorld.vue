@@ -508,7 +508,7 @@ export default {
         this.add.end = this.date2;
         this.add.detail = this.detail;
         axios
-          .post("/db_update", {
+          .post("/api/db_update", {
             oldEvent: vm.selectedEvent,
             newEvent: vm.add
           })
@@ -529,7 +529,7 @@ export default {
         this.add_toggle = false;
         this.type = "month";
         axios
-          .post("/db_add", {
+          .post("/api/db_add", {
             event: this.add,
             userName: localStorage.getItem("username")
           })
@@ -558,7 +558,7 @@ export default {
     update() {
       var vm = this;
       axios
-        .post("/db_select", {
+        .post("/api/db_select", {
           userName: localStorage.getItem("username")
         })
         .then(function(response) {
@@ -572,7 +572,7 @@ export default {
       this.selectedOpen = false;
       var vm = this;
       axios
-        .post("/db_delete", {
+        .post("/api/db_delete", {
           eventId: this.selectedEvent.id
         })
         .then(function(response) {
