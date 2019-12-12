@@ -155,6 +155,7 @@ export default {
           this.$router.push("/");
         })
         .catch(error => {
+          this.loadingDialog = false;
           if (error.response.data == "Wrong UserName") {
             this.error_messages[0] = "帳號不正確";
             this.errorName = true;
