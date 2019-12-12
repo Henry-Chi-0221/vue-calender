@@ -78,6 +78,18 @@
                 <v-card-text v-if="!selectedEvent.details">
                   <span>尚無備註</span>
                 </v-card-text>
+                <v-row align="center" class="mx-auto">
+                  <v-col class="text-center" cols="8" sm="4">
+                    <v-btn small color="blue lighten-1" href="https://www.trivago.com.tw/">Trivago</v-btn>
+                  </v-col>
+                  <v-col class="text-center" cols="8" sm="4">
+                    <v-btn small color="amber lighten-2" href="https://tc.trip.com/">Trip.com</v-btn>
+                  </v-col>
+                  <v-col class="text-center" cols="8" sm="4">
+                    <v-btn small color="brown lighten-4" href="https://www.airbnb.com.tw/">Airbnb</v-btn>
+                  </v-col>
+                </v-row>
+
                 <v-card-actions>
                   <v-btn text color="secondary" @click="selectedOpen = false">Cancel</v-btn>
                   <v-spacer></v-spacer>

@@ -91,6 +91,14 @@
           </v-card>
         </v-dialog>
       </v-row>
+      <v-dialog v-model="loadingDialog" hide-overlay persistent width="300">
+        <v-card color="primary" dark>
+          <v-card-text>
+            {{loadingInfo}}
+            <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
     </v-container>
   </transition>
 </template>
@@ -105,6 +113,8 @@ export default {
   name: "login",
   data() {
     return {
+      loadingDialog: false,
+      loadingInfo: "",
       joinDialog: false,
       email: "",
       password: "",
@@ -130,12 +140,15 @@ export default {
   },
   methods: {
     login() {
+      this.loadingDialog = true;
+      this.loadingInfo = "登入中，請稍候....";
       axios
         .post("/api/loginCheck", {
           userName: this.username,
           userPassword: this.password
         })
         .then(response => {
+          this.loadingDialog = false;
           localStorage.setItem("token", "ImLogin");
           localStorage.setItem("username", this.username);
           this.error = false;
@@ -155,6 +168,8 @@ export default {
         });
     },
     join() {
+      this.loadingDialog = true;
+      this.loadingInfo = "處理中，請稍候....";
       axios
         .post("/api/addUser", {
           userName: this.joinName,
@@ -162,6 +177,7 @@ export default {
           userEmail: this.joinEmail
         })
         .then(response => {
+          this.loadingDialog = false;
           this.joinDialog = false;
         })
         .catch(response => {

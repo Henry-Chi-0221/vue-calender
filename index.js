@@ -143,14 +143,14 @@ app.post("/api/db_select", function(req, res) {
 
 app.post("/api/db_add", function(req, res) {
   var insert =
-    "INSERT INTO events (name, start,end,detail,color,onwer,share) VALUES (?,?,?,?,?,?,?)";
+    "INSERT INTO events (name, start,end,details,color,onwer,share) VALUES (?,?,?,?,?,?,?)";
   db.run(
     insert,
     [
       req.body.event.name,
       req.body.event.start,
       req.body.event.end,
-      req.body.event.detail,
+      req.body.event.details,
       req.body.event.color,
       req.body.userName,
       ""
@@ -178,9 +178,10 @@ app.post("/api/db_delete", function(req, res) {
   });
 });
 app.post("/api/db_update", function(req, res) {
+  console.log(req.body);
   let sql = `UPDATE events
             SET name="${req.body.newEvent.name}",
-            detail="${req.body.newEvent.details}",
+            details="${req.body.newEvent.details}",
             start="${req.body.newEvent.start}",
             end="${req.body.newEvent.end}",
             color="${req.body.newEvent.color}"

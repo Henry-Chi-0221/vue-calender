@@ -36,7 +36,7 @@ let db = new sqlite3.Database(DBSOURCE, err => {
             name text, 
             start DATETIME, 
             end DATETIME, 
-            detail text,
+            details text,
             color text,
             onwer text,
             share text,
@@ -48,7 +48,7 @@ let db = new sqlite3.Database(DBSOURCE, err => {
         } else {
           // Table just created, creating some rows
           var insert =
-            "INSERT INTO events (name, start,end,detail,color,onwer,share) VALUES (?,?,?,?,?,?,?)";
+            "INSERT INTO events (name, start,end,details,color,onwer,share) VALUES (?,?,?,?,?,?,?)";
           db.run(insert, [
             "test event",
             "2019-12-20",
