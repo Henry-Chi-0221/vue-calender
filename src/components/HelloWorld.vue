@@ -256,7 +256,7 @@
 <script>
 const axios = require("axios");
 export default {
-  name: "行事曆",
+  name: "ntut-vue-calender",
 
   data: vm => ({
     today: "2019-1-1",
@@ -414,7 +414,6 @@ export default {
       }
 
       nativeEvent.stopPropagation();
-      console.log(this.selectedEvent);
     },
     updateRange({ start, end }) {
       // You could load events from an outside source (like database) now that we have the start and end dates on the calendar
@@ -427,7 +426,6 @@ export default {
           this.end.day--;
         }
         if ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0) {
-          console.log(this.start);
           if (start.month == 2 && start.day == 26) {
             this.end.month--;
             this.end.day = 29;
@@ -449,7 +447,6 @@ export default {
       //console.log(this.time2);
     },
     addEvent(x) {
-      console.log(x);
       if (x == 1) {
         var cut_start = this.selectedEvent.start.split(" ");
         var cut_end = this.selectedEvent.end.split(" ");
@@ -463,11 +460,6 @@ export default {
         this.date2 = cut_end[0];
         this.add.details = this.selectedEvent.details;
         this.put = 1;
-        console.log(cut_start[0]);
-        console.log(cut_start[1]);
-        console.log(cut_end[0]);
-        console.log(cut_end[1]);
-        console.log(this.selectedEvent);
       } else {
         this.add_toggle = true;
         this.add.start = this.focus;
@@ -489,8 +481,6 @@ export default {
       if (this.add.name == this.date1) {
         this.add.name = "";
       }
-      console.log(this.add.name);
-      console.log(this.date1);
     },
     nextColor() {
       this.colorIndex++;
@@ -513,18 +503,18 @@ export default {
     },
     send(x) {
       if (x == 1) {
-        console.log("update");
         var vm = this;
         this.add.start = this.date1;
         this.add.end = this.date2;
-        console.log(this.add);
-        var arr = [this.selectedEvent, this.add];
-
+        this.add.detail = this.detail;
         axios
-          .post("/db_update", arr)
+          .post("/db_update", {
+            oldEvent: vm.selectedEvent,
+            newEvent: vm.add
+          })
           .then(function(response) {
-            console.log(response.data);
-            vm.events = response.data;
+            vm.selectedOpen = false;
+            vm.update();
           })
           .catch(function(error) {
             console.log(error);
@@ -536,7 +526,6 @@ export default {
         var vm = this;
         this.add.start = this.parseTime1;
         this.add.end = this.parseTime2;
-        console.log(this.add.color);
         this.add_toggle = false;
         this.type = "month";
         axios
@@ -545,7 +534,6 @@ export default {
             userName: localStorage.getItem("username")
           })
           .then(function(response) {
-            console.log("ADD");
             vm.update();
           })
           .catch(function(error) {
@@ -574,7 +562,6 @@ export default {
           userName: localStorage.getItem("username")
         })
         .then(function(response) {
-          console.log(response.data);
           vm.events = response.data;
         })
         .catch(function(error) {
@@ -584,7 +571,6 @@ export default {
     delete_db() {
       this.selectedOpen = false;
       var vm = this;
-      console.log(this.selectedEvent.id);
       axios
         .post("/db_delete", {
           eventId: this.selectedEvent.id

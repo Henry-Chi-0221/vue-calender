@@ -114,7 +114,7 @@ app.post("/api/getModify", (req, res, next) => {
 
 app.post("/api/modify", (req, res, next) => {
   let sql = `UPDATE users
-            SET password="${req.body.usesrPassword}",
+            SET password="${req.body.userPassword}",
             email="${req.body.userEmail}"
             WHERE name = "${req.body.userName}"`;
 
@@ -123,7 +123,7 @@ app.post("/api/modify", (req, res, next) => {
       res.status(500);
       return console.error(err.message);
     } else {
-      res.status(200);
+      res.status(200).send("OK");
       return;
     }
   });
@@ -138,7 +138,6 @@ app.post("/api/db_select", function(req, res) {
       return;
     }
     res.send(rows);
-    console.log(rows);
   });
 });
 
@@ -159,7 +158,6 @@ app.post("/api/db_add", function(req, res) {
     function(err) {
       if (err) throw err;
       else {
-        console.log("OK");
         res.status(200).send("OK");
         return;
       }
@@ -177,32 +175,30 @@ app.post("/api/db_delete", function(req, res) {
       return;
     }
     res.status(200).send("OK");
-    console.log(rows);
   });
 });
 app.post("/api/db_update", function(req, res) {
-  fs.readFile("data.json", "utf8", function(err, data) {
-    var obj = JSON.parse(data);
-    var index_o = null;
-    obj.table.forEach(function(event, index) {
-      if (JSON.stringify(event) == JSON.stringify(req.body[0])) {
-        index_o = index;
-      }
-    });
-    if (typeof index_o == "number") {
-      obj.table.splice(index_o, 1, req.body[1]);
-      var json = JSON.stringify(obj);
-      fs.writeFile("data.json", json, "utf8", function(err, data) {
-        console.log("update success");
-      });
-      res.send(obj.table);
+  let sql = `UPDATE events
+            SET name="${req.body.newEvent.name}",
+            detail="${req.body.newEvent.details}",
+            start="${req.body.newEvent.start}",
+            end="${req.body.newEvent.end}",
+            color="${req.body.newEvent.color}"
+            WHERE id = "${req.body.oldEvent.id}"`;
+  console.log(sql);
+  db.run(sql, err => {
+    if (err) {
+      res.status(500);
+      return console.error(err.message);
     } else {
-      res.sendStatus(500);
+      res.status(200).send("OK");
+      return;
     }
   });
-
-  console.log(req.body);
 });
-app.listen(80, () => {
-  console.log("app listening on port 80.");
+
+var server_port = process.env.YOUR_PORT || process.env.PORT || 80;
+var server_host = process.env.YOUR_HOST || "0.0.0.0";
+app.listen(server_port, server_host, function() {
+  console.log("Listening on port %d", server_port);
 });
