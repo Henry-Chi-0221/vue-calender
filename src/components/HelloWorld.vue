@@ -256,7 +256,7 @@
 <script>
 const axios = require("axios");
 export default {
-  name: "HelloWorld",
+  name: "行事曆",
 
   data: vm => ({
     today: "2019-1-1",
@@ -540,10 +540,13 @@ export default {
         this.add_toggle = false;
         this.type = "month";
         axios
-          .post("/db_add", this.add)
+          .post("/db_add", {
+            event: this.add,
+            userName: localStorage.getItem("username")
+          })
           .then(function(response) {
-            console.log(response.data);
-            vm.events = response.data;
+            console.log("ADD");
+            vm.update();
           })
           .catch(function(error) {
             console.log(error);
@@ -567,7 +570,9 @@ export default {
     update() {
       var vm = this;
       axios
-        .post("/db_select", "")
+        .post("/db_select", {
+          userName: localStorage.getItem("username")
+        })
         .then(function(response) {
           console.log(response.data);
           vm.events = response.data;
@@ -579,12 +584,13 @@ export default {
     delete_db() {
       this.selectedOpen = false;
       var vm = this;
-      console.log(this.selectedEvent);
+      console.log(this.selectedEvent.id);
       axios
-        .post("/db_delete", this.selectedEvent)
+        .post("/db_delete", {
+          eventId: this.selectedEvent.id
+        })
         .then(function(response) {
-          console.log(response.data);
-          vm.events = response.data;
+          vm.update();
         })
         .catch(function(error) {
           console.log(error);
