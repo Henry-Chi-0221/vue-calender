@@ -13,7 +13,7 @@ var password = "1234";
 
 app.use(
   cors({
-    origin: ["http://localhost:8081", "http://localhost:80"], //允許這個域的訪問
+    origin: ["http://localhost:8080", "http://localhost:80"], //允許這個域的訪問
     methods: ["GET", "POST"], //只允許GET和POST請求
     alloweHeaders: ["Conten-Type", "Authorization"] //只允許帶這兩種請求頭的連接方式
   })
