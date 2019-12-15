@@ -5,6 +5,22 @@ var bodyParser = require('body-parser');
 var history = require('connect-history-api-fallback');
 var fs = require('fs');
 var data = [];
+<<<<<<< Updated upstream
+=======
+var cors = require("cors");
+var db = require("./database.js");
+
+var user = "admin@gmail.com";
+var password = "1234";
+
+app.use(
+  cors({
+    origin: ["http://localhost:8080", "http://localhost:80"], //允許這個域的訪問
+    methods: ["GET", "POST"], //只允許GET和POST請求
+    alloweHeaders: ["Conten-Type", "Authorization"] //只允許帶這兩種請求頭的連接方式
+  })
+);
+>>>>>>> Stashed changes
 
 var user = 'm951406@gmail.com';
 var password = '1234';
