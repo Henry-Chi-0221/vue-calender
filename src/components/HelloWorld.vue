@@ -77,32 +77,32 @@
               <br />
               <span>結束時間:{{selectedEvent.end}}</span>
               <p></p>
+              <span>地點:{{selectedEvent.location}}</span>
+              <br />
               <span>備註:{{selectedEvent.details}}</span>
               <span v-if="!selectedEvent.details">尚無備註</span>
+              <p/><span>旅遊工具箱</span>
             </v-card-text>
-            <v-divider></v-divider>
-            <div class="mx-auto">
-              <v-btn
-                class="mx-auto"
-                small
-                color="blue lighten-1"
-                href="https://www.trivago.com.tw/"
-              >Trivago</v-btn>
+          
+            <v-row no-gutters>
+              <v-col cols="sm">
+                <div class="text-center">
+                  <v-btn small color="blue lighten-1" >Trivago</v-btn>
+                </div>
+              </v-col>
 
-              <v-btn
-                class="mx-auto"
-                small
-                color="amber lighten-2"
-                href="https://tc.trip.com/"
-              >Trip.com</v-btn>
+              <v-col cols="sm">
+                <div class="text-center">
+                  <v-btn small color="amber lighten-2" href="https://tc.trip.com/">Trip.com</v-btn>
+                </div>
+              </v-col>
 
-              <v-btn
-                class="mx-auto"
-                small
-                color="brown lighten-4"
-                href="https://www.airbnb.com.tw/"
-              >Airbnb</v-btn>
-            </div>
+              <v-col cols="sm">
+                <div class="text-center">
+                  <v-btn small color="brown lighten-4" href="https://www.airbnb.com.tw/">Airbnb</v-btn>
+                </div>
+              </v-col>
+            </v-row>
 
             <v-card-actions>
               <v-btn text color="secondary" @click="selectedOpen = false">Cancel</v-btn>
@@ -138,7 +138,11 @@
                   ></v-text-field>
                 </v-col>
                 <v-col cols="6">
-                  <v-text-field prepend-icon="fas fa-location-arrow" label="地點"></v-text-field>
+                  <v-text-field
+                    v-model="add.location"
+                    prepend-icon="fas fa-location-arrow"
+                    label="地點"
+                  ></v-text-field>
                 </v-col>
 
                 <v-col cols="6">
@@ -151,7 +155,6 @@
                     :close-on-content-click="false"
                     transition="scale-transition"
                     offset-y
-                    full-width
                     max-width="290px"
                     min-width="290px"
                   >
@@ -293,7 +296,8 @@ export default {
       details: "",
       start: "",
       end: "",
-      color: "primary"
+      color: "primary",
+      location: ""
     },
     put: 0,
     colors: [
@@ -474,6 +478,7 @@ export default {
         this.time1 = cut_start[1];
         this.time2 = cut_end[1];
         this.add.details = this.selectedEvent.details;
+        this.add.location = this.selectedEvent.location;
         this.put = 1;
       } else {
         var today = new Date();
@@ -481,7 +486,7 @@ export default {
         this.add.start = this.focus;
         this.add.end = this.focus;
         this.add.name = this.focus;
-
+        this.add.location = "台灣";
         this.date1 = this.focus;
         this.date2 = this.focus;
         this.add.details = "";

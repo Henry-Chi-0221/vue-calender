@@ -40,6 +40,7 @@ let db = new sqlite3.Database(DBSOURCE, err => {
             color text,
             onwer text,
             share text,
+            location text,
             addTime DATETIME DEFAULT CURRENT_TIMESTAMP
             )`,
       err => {
@@ -48,7 +49,7 @@ let db = new sqlite3.Database(DBSOURCE, err => {
         } else {
           // Table just created, creating some rows
           var insert =
-            "INSERT INTO events (name, start,end,details,color,onwer,share) VALUES (?,?,?,?,?,?,?)";
+            "INSERT INTO events (name, start,end,details,color,onwer,share,location) VALUES (?,?,?,?,?,?,?,?)";
           db.run(insert, [
             "test event",
             "2019-12-20",
@@ -56,7 +57,8 @@ let db = new sqlite3.Database(DBSOURCE, err => {
             "test for god",
             "deep-purple",
             "admin",
-            ""
+            "",
+            "Taiwan"
           ]);
           db.run(insert, [
             "test event 2",
@@ -65,7 +67,8 @@ let db = new sqlite3.Database(DBSOURCE, err => {
             "test for good",
             "primary",
             "admin",
-            ""
+            "",
+            "Taiwan"
           ]);
           db.run(insert, [
             "test event 3",
@@ -74,7 +77,8 @@ let db = new sqlite3.Database(DBSOURCE, err => {
             "test for good",
             "primary",
             "user",
-            ""
+            "",
+            "Taiwan"
           ]);
           db.run(insert, [
             "test event 4",
@@ -83,7 +87,8 @@ let db = new sqlite3.Database(DBSOURCE, err => {
             "test for good",
             "primary",
             "user",
-            ""
+            "",
+            "Taiwan"
           ]);
         }
       }

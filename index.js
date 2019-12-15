@@ -143,7 +143,7 @@ app.post("/api/db_select", function(req, res) {
 
 app.post("/api/db_add", function(req, res) {
   var insert =
-    "INSERT INTO events (name, start,end,details,color,onwer,share) VALUES (?,?,?,?,?,?,?)";
+    "INSERT INTO events (name, start,end,details,color,onwer,share,location) VALUES (?,?,?,?,?,?,?,?)";
   db.run(
     insert,
     [
@@ -153,7 +153,8 @@ app.post("/api/db_add", function(req, res) {
       req.body.event.details,
       req.body.event.color,
       req.body.userName,
-      ""
+      "",
+      req.body.event.location
     ],
     function(err) {
       if (err) throw err;
@@ -184,7 +185,8 @@ app.post("/api/db_update", function(req, res) {
             details="${req.body.newEvent.details}",
             start="${req.body.newEvent.start}",
             end="${req.body.newEvent.end}",
-            color="${req.body.newEvent.color}"
+            color="${req.body.newEvent.color}",
+            location="${req.body.newEvent.location}"
             WHERE id = "${req.body.oldEvent.id}"`;
   console.log(sql);
   db.run(sql, err => {
