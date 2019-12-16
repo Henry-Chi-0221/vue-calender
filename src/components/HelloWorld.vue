@@ -87,7 +87,7 @@
             <v-row no-gutters>
               <v-col cols="sm">
                 <div class="text-center">
-                  <v-btn small color="blue lighten-1" >Trivago</v-btn>
+                  <v-btn small color="blue lighten-1" v-bind:href=getUrl(1,selectedEvent.location,selectedEvent.start,selectedEvent.end)>Trivago</v-btn>
                 </div>
               </v-col>
 
@@ -337,6 +337,7 @@ export default {
     events: []
   }),
   computed: {
+    
     title() {
       const { start, end } = this;
       if (!start || !end) {
@@ -393,6 +394,13 @@ export default {
     this.update();
   },
   methods: {
+    getUrl(web,location,start,end){
+      var cut_start = start.split(" ");
+      var cut_end = end.split(" ");
+      if(web==1){
+        return "https://www.trivago.com?sQuery="+location+"&aDateRange[arr]="+cut_start[0]+"&aDateRange[dep]="+cut_end[0];
+      }
+    },
     viewDay({ date }) {
       this.focus = date;
       this.type = "day";
