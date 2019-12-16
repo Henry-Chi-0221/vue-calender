@@ -81,13 +81,14 @@
               <br />
               <span>備註:{{selectedEvent.details}}</span>
               <span v-if="!selectedEvent.details">尚無備註</span>
-              <p/><span>旅遊工具箱</span>
+              <p />
+              <span>旅遊工具箱</span>
             </v-card-text>
-          
+
             <v-row no-gutters>
               <v-col cols="sm">
                 <div class="text-center">
-                  <v-btn small color="blue lighten-1" v-bind:href=getUrl(1,selectedEvent.location,selectedEvent.start,selectedEvent.end)>Trivago</v-btn>
+                  <v-btn small color="blue lighten-1" v-bind:href="getUrl(1)">Trivago</v-btn>
                 </div>
               </v-col>
 
@@ -99,7 +100,7 @@
 
               <v-col cols="sm">
                 <div class="text-center">
-                  <v-btn small color="brown lighten-4" href="https://www.airbnb.com.tw/">Airbnb</v-btn>
+                  <v-btn small color="brown lighten-4" v-bind:href="getUrl(3)">Airbnb</v-btn>
                 </div>
               </v-col>
             </v-row>
@@ -337,7 +338,6 @@ export default {
     events: []
   }),
   computed: {
-    
     title() {
       const { start, end } = this;
       if (!start || !end) {
@@ -394,13 +394,6 @@ export default {
     this.update();
   },
   methods: {
-    getUrl(web,location,start,end){
-      var cut_start = start.split(" ");
-      var cut_end = end.split(" ");
-      if(web==1){
-        return "https://www.trivago.com?sQuery="+location+"&aDateRange[arr]="+cut_start[0]+"&aDateRange[dep]="+cut_end[0];
-      }
-    },
     viewDay({ date }) {
       this.focus = date;
       this.type = "day";
@@ -613,6 +606,28 @@ export default {
           console.log(error);
         });
       //console.log(this.selectedEvent);
+    },
+    getUrl(web) {
+      if (web == 1) {
+        return (
+          "https://www.trivago.com?sQuery=" +
+          this.selectedEvent.location +
+          "&aDateRange[arr]=" +
+          this.selectedEvent.start +
+          "&aDateRange[dep]=" +
+          this.selectedEvent.end
+        );
+      }
+      if (web == 3) {
+        return (
+          "https://www.airbnb.com.tw/s/" +
+          this.selectedEvent.location +
+          "/homes?checkin=" +
+          this.selectedEvent.start +
+          "&checkout=" +
+          this.selectedEvent.end
+        );
+      }
     }
   },
   watch: {
