@@ -81,30 +81,70 @@
               <br />
               <span>備註:{{selectedEvent.details}}</span>
               <span v-if="!selectedEvent.details">尚無備註</span>
-              <p />
-              <span>旅遊工具箱</span>
             </v-card-text>
 
-            <v-row no-gutters>
-              <v-col cols="sm">
-                <div class="text-center">
-                  <v-btn small color="blue lighten-1" v-bind:href="getUrl(1)">Trivago</v-btn>
-                </div>
-              </v-col>
+            <v-card-text>
+              <span>住房工具箱</span>
+              <v-row no-gutters>
+                <v-col cols="sm">
+                  <div class="text-center">
+                    <v-btn small color="blue lighten-1" v-bind:href="getUrl(1)">Trivago</v-btn>
+                  </div>
+                </v-col>
 
-              <v-col cols="sm">
-                <div class="text-center">
-                  <v-btn small color="amber lighten-2" href="https://tc.trip.com/">Trip.com</v-btn>
-                </div>
-              </v-col>
+                <v-col cols="sm">
+                  <div class="text-center">
+                    <v-btn small color="yellow lighten-2" href="https://tc.trip.com/">Trip.com</v-btn>
+                  </div>
+                </v-col>
 
-              <v-col cols="sm">
-                <div class="text-center">
-                  <v-btn small color="brown lighten-4" v-bind:href="getUrl(3)">Airbnb</v-btn>
-                </div>
-              </v-col>
-            </v-row>
+                <v-col cols="sm">
+                  <div class="text-center">
+                    <v-btn small color="pink lighten-4" v-bind:href="getUrl(3)">Airbnb</v-btn>
+                  </div>
+                </v-col>
+              </v-row>
+              <span>行程工具箱</span>
+              <v-row no-gutters>
+                <v-col cols="sm">
+                  <div class="text-center">
+                    <v-btn small color="amber lighten-1" href="https://www.gomaji.com/">gomaji</v-btn>
+                  </div>
+                </v-col>
 
+
+                <v-col cols="sm">
+                  <div class="text-center">
+                    <v-btn small color="blue lighten-4" href="https://www.vscinemas.com.tw/vsweb/">威秀</v-btn>
+                  </div>
+                </v-col>
+                <v-col cols="sm">
+                  <div class="text-center">
+                    <v-btn small color="green lighten-4" href="http://www.ubus.com.tw/">統聯</v-btn>
+                  </div>
+                </v-col>
+              </v-row>
+                   <span>飲食工具箱</span>
+               <v-row no-gutters>
+
+                <v-col cols="sm">
+                  <div class="text-center">
+                    <v-btn small color="brown lighten-2" href="https://www.ubereats.com/zh-TW/">ubereats</v-btn>
+                  </div>
+                </v-col>
+
+                <v-col cols="sm">
+                  <div class="text-center">
+                    <v-btn small color="red lighten-4" href="https://www.foodpanda.com.tw/">熊貓外送</v-btn>
+                  </div>
+                </v-col>
+                <v-col cols="sm">
+                  <div class="text-center">
+                    <v-btn small color="green lighten-4" href="https://deliveroo.tw/zh-tw/">戶戶送</v-btn>
+                  </div>
+                </v-col>
+              </v-row>
+            </v-card-text>
             <v-card-actions>
               <v-btn text color="secondary" @click="selectedOpen = false">Cancel</v-btn>
               <v-spacer></v-spacer>
