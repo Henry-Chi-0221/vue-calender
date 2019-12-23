@@ -112,10 +112,13 @@
                   </div>
                 </v-col>
 
-
                 <v-col cols="sm">
                   <div class="text-center">
-                    <v-btn small color="blue lighten-4" href="https://www.vscinemas.com.tw/vsweb/">威秀</v-btn>
+                    <v-btn
+                      small
+                      color="blue lighten-4"
+                      href="https://www.vscinemas.com.tw/vsweb/"
+                    >威秀</v-btn>
                   </div>
                 </v-col>
                 <v-col cols="sm">
@@ -124,12 +127,15 @@
                   </div>
                 </v-col>
               </v-row>
-                   <span>飲食工具箱</span>
-               <v-row no-gutters>
-
+              <span>飲食工具箱</span>
+              <v-row no-gutters>
                 <v-col cols="sm">
                   <div class="text-center">
-                    <v-btn small color="brown lighten-2" href="https://www.ubereats.com/zh-TW/">ubereats</v-btn>
+                    <v-btn
+                      small
+                      color="brown lighten-2"
+                      href="https://www.ubereats.com/zh-TW/"
+                    >ubereats</v-btn>
                   </div>
                 </v-col>
 
@@ -159,10 +165,25 @@
           <v-toolbar :color="add.color" dark>
             <v-toolbar-title v-html="add.name"></v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn icon @click="nextColor">
+            <v-btn icon @click="colorMenu=true">
               <v-icon small>fas fa-paint-brush</v-icon>
             </v-btn>
           </v-toolbar>
+
+          <v-dialog persistent v-model="colorMenu" max-width="300px">
+            <v-list>
+              <v-list-item
+                v-for="(color ,index) in colors"
+                :key="index"
+                @click="nextColor(color.color)"
+              >
+                      <v-list-item-icon>
+                <v-avatar :color="color.color" size="30"> </v-avatar>
+                        </v-list-item-icon>
+                <v-list-item-title>{{ color.name }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-dialog>
           <v-card-text>
             <v-container>
               <!------------------------------------------------------------>
@@ -219,7 +240,6 @@
                     :close-on-content-click="false"
                     transition="scale-transition"
                     offset-y
-                    full-width
                     max-width="290px"
                     min-width="290px"
                   >
@@ -296,6 +316,7 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+
       <!---------------------------------------------------------------->
     </v-app>
   </transition>
@@ -315,6 +336,7 @@ export default {
   name: "ntut-vue-calender",
 
   data: vm => ({
+    colorMenu: false,
     today: "2019-1-1",
     focus: "2019-1-1",
     test: "",
@@ -342,17 +364,16 @@ export default {
     },
     put: 0,
     colors: [
-      "primary",
-      "blue",
-      "indigo",
-      "deep-purple",
-      "red",
-      "deep-orange",
-      "teal",
-      "green",
-      "grey darken-1",
-      "black",
-      "#4285F4"
+      { color: "primary", name: "主要" },
+      { color: "blue", name: "深藍" },
+      { color: "indigo", name: "淺藍" },
+      { color: "deep-purple", name: "紫色" },
+      { color: "red", name: "紅色" },
+      { color: "deep-orange", name: "橘色" },
+      { color: "teal", name: "淺綠" },
+      { color: "green", name: "綠" },
+      { color: "grey darken-1", name: "淺灰" },
+      { color: "black", name: "黑" }
     ],
     colorIndex: 0,
 
@@ -546,12 +567,9 @@ export default {
         this.add.name = "";
       }
     },
-    nextColor() {
-      this.colorIndex++;
-      this.add.color = this.colors[this.colorIndex];
-      if (this.colorIndex == this.colors.length) {
-        this.colorIndex = 0;
-      }
+    nextColor(color) {
+      this.add.color = color;
+      this.colorMenu = false;
     },
     formatDate(date) {
       if (!date) return null;
